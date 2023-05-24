@@ -1,0 +1,18 @@
+job:
+  image: 'hmctspublic.azurecr.io/idam/idam-user-disposer:latest'
+  ingressHost: idam-user-disposer-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+  kind: CronJob
+  schedule: "0 22 * * *"
+  startingDeadlineSeconds: 600
+  concurrencyPolicy: Forbid
+  aadIdentityName: idam
+#  Uncomment once the vault containing the app insights key has been set up
+#  keyVaults:
+#    rpe:
+#      secrets:
+#        - name: AppInsightsInstrumentationKey
+#          alias: azure.application-insights.instrumentation-key
+  environment:
+
+global:
+  jobKind: CronJob
