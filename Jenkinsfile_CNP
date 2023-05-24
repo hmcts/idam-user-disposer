@@ -3,7 +3,10 @@
 @Library("Infrastructure")
 
 def type = "java"
-def product = "rpe"
-def component = "demo"
+def product = "idam"
+def component = "user-disposer"
+def branchesToSync = ['demo','perftest','ithc']
+
+GradleBuilder builder = new GradleBuilder(this, product)
 
 withPipeline(type, product, component) {}
