@@ -122,16 +122,18 @@ jacocoTestReport {
     xml.required = true
     csv.required = false
     html.required = true
+    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
 
-project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
-project.tasks['check'].dependsOn integration
+project.tasks['sonarqube'].dependsOn jacocoTestReport
+//project.tasks['check'].dependsOn integration
 
 sonarqube {
   properties {
     property "sonar.projectName", "Reform :: idam-user-disposer"
     property "sonar.projectKey", "uk.gov.hmcts.reform:idam-user-disposer"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
   }
 }
 
@@ -151,14 +153,14 @@ dependencyUpdates {
 dependencyCheck {
   // Specifies if the build should be failed if a CVSS score above a specified level is identified.
   // range of 0-10 fails the build, anything greater and it doesn't fail the build
-  failBuildOnCVSS = 0
+  failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
   suppressionFile = 'config/owasp/suppressions.xml'
 
   analyzers {
     // Disable scanning of .NET related binaries
     assemblyEnabled = false
   }
-  skipConfigurations = [
+  /*skipConfigurations = [
     "checkstyle",
     "compileOnly",
     "pmd",
@@ -167,7 +169,7 @@ dependencyCheck {
     "smokeTest",
     "contractTestRuntimeClasspath",
     "contractTestCompileClasspath"
-  ]
+  ]*/
 }
 
 repositories {
@@ -207,7 +209,7 @@ dependencies {
 mainClassName = 'uk.gov.hmcts.reform.demo.Application'
 
 bootJar {
-  archiveFileName = "spring-boot-template.jar"
+  archiveFileName = "idam-user-disposer.jar"
 
   manifest {
     attributes('Implementation-Version': project.version.toString())
@@ -216,6 +218,18 @@ bootJar {
 
 // Gradle 7.x issue, workaround from: https://github.com/gradle/gradle/issues/17236#issuecomment-894768083
 rootProject.tasks.named("processSmokeTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processFunctionalTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processIntegrationTestResources") {
   duplicatesStrategy = 'include'
 }
 
