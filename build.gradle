@@ -134,8 +134,10 @@ sonarqube {
     property "sonar.projectName", "Reform :: idam-user-disposer"
     property "sonar.projectKey", "uk.gov.hmcts.reform:idam-user-disposer"
     property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
+    property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/idam/config/**," +
+      "src/main/java/uk/gov/hmcts/reform/idam/Application.java"
   }
-}
+  }
 
 // before committing a change, make sure task still works
 dependencyUpdates {
