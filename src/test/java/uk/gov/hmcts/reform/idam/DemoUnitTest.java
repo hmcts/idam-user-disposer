@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.rsecheck;
+package uk.gov.hmcts.reform.idam;
 
 import org.junit.jupiter.api.Test;
 
