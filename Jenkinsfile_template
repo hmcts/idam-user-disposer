@@ -4,7 +4,7 @@
 
 def type = "java"
 def product = "idam"
-def component = "user-dipsoer"
+def component = "user-disposer"
 def branchesToSync = ['demo','perftest','ithc']
 
 GradleBuilder builder = new GradleBuilder(this, product)
