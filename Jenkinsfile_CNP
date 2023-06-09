@@ -43,7 +43,7 @@ withPipeline(type, product, component) {
                 keepAll              : true,
                 reportDir            : "build/reports/tests/functional",
                 reportFiles          : "index.html",
-                reportName           : "ccd-case-disposer Functional Test Report"
+                reportName           : "idam-user-disposer Functional Test Report"
         ]
     }
 
@@ -57,7 +57,7 @@ withPipeline(type, product, component) {
                 keepAll              : true,
                 reportDir            : "build/reports/tests/functional",
                 reportFiles          : "index.html",
-                reportName           : "ccd-case-disposer Functional Test Report"
+                reportName           : "idam-user-disposer Functional Test Report"
         ]
     }
 }
