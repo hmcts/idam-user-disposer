@@ -1,12 +1,12 @@
 apiVersion: v2
 appVersion: "1.0"
-description: A Helm chart for spring-boot-template App
-name: rpe-spring-boot-template
-home: https://github.com/hmcts/spring-boot-template
-version: 0.0.7
+description: A Helm chart for ccd-case-disposer App
+name: idam-user-disposer
+home: https://github.com/hmcts/idam-user-disposer
+version: 0.0.1
 maintainers:
-  - name: HMCTS rpe team
+  - name: HMCTS Retain and Dispose team
 dependencies:
-  - name: java
-    version: 4.1.2
+  - name: job
+    version: ~1.0.0
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
