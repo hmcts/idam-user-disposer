@@ -1,10 +1,11 @@
 #!groovy
+import uk.gov.hmcts.contino.GithubAPI
 
 @Library("Infrastructure")
 
 def type = "java"
-def product = "idam"
-def component = "user-disposer"
+def product = "disposer"
+def component = "idam-user-disposer"
 def branchesToSync = ['demo','perftest','ithc']
 
 GradleBuilder builder = new GradleBuilder(this, product)
