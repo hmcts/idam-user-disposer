@@ -23,7 +23,7 @@ withNightlyPipeline(type, product, component) {
   nonServiceApp()
   enableMutationTest()
   enableFullFunctionalTest()
-  enableSlackNotifications('#lau-builds')
+  enableSlackNotifications('#disposer-builds')
   enableFortifyScan()
 
   afterAlways('fortify-scan') {
