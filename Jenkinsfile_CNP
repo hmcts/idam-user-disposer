@@ -16,7 +16,6 @@ withPipeline(type, product, component) {
   afterAlways('test') {
     // hmcts/cnp-jenkins-library may fail to copy artifacts after checkstyle error so repeat command (see /src/uk/gov/hmcts/contino/GradleBuilder.groovy)
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/reports/checkstyle/*.html'
-
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/reports/pmd/*.html'
   }
 
@@ -27,12 +26,10 @@ withPipeline(type, product, component) {
   disableLegacyDeployment()
   nonServiceApp()
   syncBranchesWithMaster(branchesToSync)
+  enableSlackNotifications('#lau-builds')
+  enableFortifyScan()
 
   onPR() {
-    echo "Loading PR secrets"
-    loadVaultSecrets(prSecrets)
-    env.ENV = 'preview'
-
     def githubApi = new GithubAPI(this)
     if (!githubApi.getLabelsbyPattern(env.BRANCH_NAME, "keep-helm")) {
       enableCleanupOfHelmReleaseAlways()
@@ -40,10 +37,6 @@ withPipeline(type, product, component) {
   }
 
   onNonPR() {
-    echo "Loading secrets"
-    loadVaultSecrets(secrets)
-    env.ENV = 'aat'
-
   }
 
   afterAlways('functionalTest:preview') {
