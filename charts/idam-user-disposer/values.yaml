@@ -5,7 +5,7 @@ job:
   schedule: "0 22 * * *"
   startingDeadlineSeconds: 600
   concurrencyPolicy: Forbid
-  aadIdentityName: idam
+  aadIdentityName: disposer
   keyVaults:
     idam:
       secrets:
