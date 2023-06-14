@@ -1,7 +1,7 @@
 apiVersion: v2
 appVersion: "1.0"
 description: A Helm chart for idam-user-disposer App
-name: ccd-case-disposer
+name: idam-user-disposer
 home: https://github.com/hmcts/idam-user-disposer
 version:  0.0.1
 maintainers:
