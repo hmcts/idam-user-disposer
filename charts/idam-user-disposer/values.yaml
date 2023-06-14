@@ -1,11 +1,11 @@
 job:
-  image: 'hmctspublic.azurecr.io/idam/idam-user-disposer:latest'
+  image: 'hmctspublic.azurecr.io/disposer/idam-user-disposer:latest'
   ingressHost: idam-user-disposer-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   kind: CronJob
   schedule: "0 22 * * *"
   startingDeadlineSeconds: 600
   concurrencyPolicy: Forbid
-  aadIdentityName: idam
+  aadIdentityName: disposer
   keyVaults:
     idam:
       secrets:
