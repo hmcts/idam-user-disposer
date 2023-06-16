@@ -1,0 +1,70 @@
+#!groovy
+
+@Library("Infrastructure")
+
+import uk.gov.hmcts.contino.GithubAPI
+import uk.gov.hmcts.contino.GradleBuilder
+
+def type = "java"
+def product = "disposer"
+def component = "idam-user-disposer"
+def branchesToSync = ['demo','perftest','ithc']
+
+GradleBuilder builder = new GradleBuilder(this, product)
+
+withPipeline(type, product, component) {
+  afterAlways('test') {
+    // hmcts/cnp-jenkins-library may fail to copy artifacts after checkstyle error so repeat command (see /src/uk/gov/hmcts/contino/GradleBuilder.groovy)
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/reports/checkstyle/*.html'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/reports/pmd/*.html'
+  }
+
+  afterAlways('test') {
+    builder.gradle('integration')
+  }
+  enableAksStagingDeployment()
+  disableLegacyDeployment()
+  nonServiceApp()
+  syncBranchesWithMaster(branchesToSync)
+  enableSlackNotifications('#disposer-builds')
+  enableFortifyScan()
+
+  onPR() {
+    def githubApi = new GithubAPI(this)
+    if (!githubApi.getLabelsbyPattern(env.BRANCH_NAME, "keep-helm")) {
+      enableCleanupOfHelmReleaseAlways()
+    }
+  }
+
+  onNonPR() {
+  }
+
+  afterAlways('functionalTest:preview') {
+    junit 'build/test-results/functional/**/*.xml'
+    archiveArtifacts 'build/reports/tests/functional/index.html'
+
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "build/reports/tests/functional",
+      reportFiles          : "index.html",
+      reportName           : "idam-user-disposer Functional Test Report"
+    ]
+  }
+
+  afterAlways('functionalTest:aat') {
+    junit 'build/test-results/functional/**/*.xml'
+    archiveArtifacts 'build/reports/tests/functional/index.html'
+
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "build/reports/tests/functional",
+      reportFiles          : "index.html",
+      reportName           : "idam-user-disposer Functional Test Report"
+    ]
+  }
+
+}

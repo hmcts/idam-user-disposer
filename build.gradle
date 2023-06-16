@@ -1,3 +1,12 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("net.serenity-bdd:serenity-gradle-plugin:3.6.22")
+  }
+}
+
 plugins {
   id 'application'
   id 'checkstyle'
@@ -6,8 +15,10 @@ plugins {
   id 'io.spring.dependency-management' version '1.1.0'
   id 'org.springframework.boot' version '3.1.0'
   id 'org.owasp.dependencycheck' version '8.2.1'
-  id 'com.github.ben-manes.versions' version '0.46.0'
-  id 'org.sonarqube' version '4.0.0.2929'
+  id 'io.freefair.lombok' version '8.0.1'
+  id 'com.github.ben-manes.versions' version '0.47.0'
+  id 'org.sonarqube' version '4.2.1.3168'
+
 }
 
 group = 'uk.gov.hmcts.reform'
@@ -49,6 +60,7 @@ sourceSets {
 }
 
 configurations {
+
   functionalTestImplementation.extendsFrom testImplementation
   functionalTestRuntimeOnly.extendsFrom runtimeOnly
 
@@ -103,7 +115,7 @@ task smoke(type: Test) {
 
 checkstyle {
   maxWarnings = 0
-  toolVersion = '10.11.0'
+  toolVersion = '10.12.0'
   getConfigDirectory().set(new File(rootDir, 'config/checkstyle'))
 }
 
@@ -122,18 +134,23 @@ jacocoTestReport {
     xml.required = true
     csv.required = false
     html.required = true
+    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
 
 project.tasks['sonarqube'].dependsOn jacocoTestReport
-project.tasks['check'].dependsOn integration
 
-sonarqube {
+sonar {
   properties {
-    property "sonar.projectName", "Reform :: spring-boot-template"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
+    property "sonar.projectName", "Reform :: idam-user-disposer"
+    property "sonar.projectKey", "uk.gov.hmcts.reform:ccd-case-disposer"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+    property "sonar.coverage.exclusions", "**/ccd/Application.java"
+    property "sonar.pitest.mode", "reuseReport"
+    property "sonar.pitest.reportsDirectory", "build/reports/pitest"
   }
 }
+
 
 // before committing a change, make sure task still works
 dependencyUpdates {
@@ -151,14 +168,14 @@ dependencyUpdates {
 dependencyCheck {
   // Specifies if the build should be failed if a CVSS score above a specified level is identified.
   // range of 0-10 fails the build, anything greater and it doesn't fail the build
-  failBuildOnCVSS = 0
+  failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
   suppressionFile = 'config/owasp/suppressions.xml'
 
   analyzers {
     // Disable scanning of .NET related binaries
     assemblyEnabled = false
   }
-  skipConfigurations = [
+  /*skipConfigurations = [
     "checkstyle",
     "compileOnly",
     "pmd",
@@ -167,7 +184,19 @@ dependencyCheck {
     "smokeTest",
     "contractTestRuntimeClasspath",
     "contractTestCompileClasspath"
-  ]
+  ]*/
+}
+
+dependencyManagement {
+  dependencies {
+    dependencySet(group: 'org.springframework.cloud', version: '4.0.2') {
+      entry 'spring-cloud-starter-openfeign'
+      entry 'spring-cloud-openfeign-core'
+    }
+  }
+  imports {
+    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.2'
+  }
 }
 
 repositories {
@@ -182,11 +211,19 @@ ext {
 
 ext['snakeyaml.version'] = '2.0'
 
+def versions = [
+  junit             : '5.9.3',
+  cucumber          : '7.12.0',
+  lombok            : '1.18.26'
+]
+
 dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.0.1'
@@ -194,7 +231,17 @@ dependencies {
   implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4JVersion
   implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: log4JVersion
 
+  implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
+  implementation group: 'com.microsoft.azure', name: 'applicationinsights-web', version: '3.4.13'
+
   implementation group: 'io.rest-assured', name: 'rest-assured'
+  implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+  implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
+
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   testImplementation(platform('org.junit:junit-bom:5.9.3'))
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
@@ -202,12 +249,25 @@ dependencies {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
+
+  testImplementation group: 'io.cucumber', name: 'cucumber-spring', version: versions.cucumber
+  testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
+  testImplementation group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber
+
+  testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+  testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
+  testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.35.0'
+  testImplementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+  testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
+
+  integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+  integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 }
 
-mainClassName = 'uk.gov.hmcts.reform.demo.Application'
+mainClassName = 'uk.gov.hmcts.reform.idam.Application'
 
 bootJar {
-  archiveFileName = "spring-boot-template.jar"
+  archiveFileName = "idam-user-disposer.jar"
 
   manifest {
     attributes('Implementation-Version': project.version.toString())
@@ -216,6 +276,18 @@ bootJar {
 
 // Gradle 7.x issue, workaround from: https://github.com/gradle/gradle/issues/17236#issuecomment-894768083
 rootProject.tasks.named("processSmokeTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processFunctionalTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processIntegrationTestResources") {
   duplicatesStrategy = 'include'
 }
 
