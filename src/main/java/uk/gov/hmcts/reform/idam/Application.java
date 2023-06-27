@@ -14,7 +14,7 @@ public class Application implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        log.info("Starting the Idam-Disposer job...");
+        log.info("Starting the Idam-Disposer job..");
     }
 
     public static void main(final String[] args) {
