@@ -15,5 +15,12 @@
     </notes>
     <cve>CVE-2022-1471</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+      name: jackson-databind
+      Does not seem to be considered as CVE: https://github.com/FasterXML/jackson-databind/issues/3972
+    ]]></notes>
+    <cve>CVE-2023-35116</cve>
+  </suppress>
   <!--End of temporary suppression section -->
 </suppressions>
