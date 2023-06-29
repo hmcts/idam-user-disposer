@@ -1,22 +1,11 @@
-server:
-  port: 4550
-
-management:
-  endpoint:
-    health:
-      show-details: "always"
-  endpoints:
-    web:
-      base-path: /
-      exposure:
-        include: health, info, prometheus
-
 springdoc:
   packagesToScan: uk.gov.hmcts.reform.demo.controllers
   writer-with-order-by-keys: true
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:
+  main:
+    web-application-type: none
   config:
     import: "optional:configtree:/mnt/secrets/disposer/"
   application:
