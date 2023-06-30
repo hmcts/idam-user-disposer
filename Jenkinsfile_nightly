@@ -14,7 +14,7 @@ properties([
 
 def type = "java"
 def product = "disposer"
-def component = "idam-user-disposer"
+def component = "disposer-idam-user"
 
 withNightlyPipeline(type, product, component) {
 

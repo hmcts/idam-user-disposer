@@ -141,7 +141,7 @@ project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 sonar {
   properties {
-    property "sonar.projectName", "Reform :: idam-user-disposer"
+    property "sonar.projectName", "Reform :: disposer-idam-user"
     property "sonar.projectKey", "uk.gov.hmcts.reform:idam-user-disposer"
     property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     property "sonar.coverage.exclusions", "**/ccd/Application.java"
@@ -266,7 +266,7 @@ dependencies {
 mainClassName = 'uk.gov.hmcts.reform.idam.Application'
 
 bootJar {
-  archiveFileName = "idam-user-disposer.jar"
+  archiveFileName = "disposer-idam-user.jar"
 
   manifest {
     attributes('Implementation-Version': project.version.toString())

@@ -1,8 +1,8 @@
 apiVersion: v2
 appVersion: "1.0"
-description: A Helm chart for idam-user-disposer App
-name: idam-user-disposer
-home: https://github.com/hmcts/idam-user-disposer
+description: A Helm chart for disposer-idam-user App
+name: disposer-idam-user
+home: https://github.com/hmcts/disposer-idam-user
 version:  0.0.6
 maintainers:
   - name: HMCTS Retain and Dispose team
