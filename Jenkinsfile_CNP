@@ -6,8 +6,8 @@ import uk.gov.hmcts.contino.GithubAPI
 import uk.gov.hmcts.contino.GradleBuilder
 
 def type = "java"
-def product = "disposer"
-def component = "idam-user-disposer"
+def product = "idam"
+def component = "user-disposer"
 def branchesToSync = ['demo','perftest','ithc']
 
 GradleBuilder builder = new GradleBuilder(this, product)
