@@ -1,6 +1,6 @@
 {
   "connectionString": "${file:/mnt/secrets/disposer/app-insights-connection-string}",
   "role": {
-    "name": "idam-user-disposer"
+    "name": "disposer-idam-user"
   }
 }

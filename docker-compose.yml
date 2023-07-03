@@ -1,7 +1,7 @@
 version: '2.1'
 
 services:
-  idam-user-disposer:
+  disposer-idam-user:
     build:
       context: .
       args:
