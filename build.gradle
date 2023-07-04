@@ -248,7 +248,7 @@ def versions = [
   junit             : '5.9.3',
   cucumber          : '7.12.1',
   lombok            : '1.18.28',
-  gradlePitest        : '1.9.0'
+  gradlePitest        : '1.9.11'
 ]
 
 dependencies {
