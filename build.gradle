@@ -18,8 +18,42 @@ plugins {
   id 'io.freefair.lombok' version '8.1.0'
   id 'com.github.ben-manes.versions' version '0.47.0'
   id 'org.sonarqube' version '4.2.1.3168'
-
+  id "info.solidsoft.pitest" version '1.9.11'
 }
+
+apply plugin: "info.solidsoft.pitest"
+
+
+pitest {
+  pitestVersion.set('1.7.4')
+  junit5PluginVersion.set('0.15')
+  targetClasses = ['uk.gov.hmcts.reform.*']
+  excludedClasses = [
+          'uk.gov.hmcts.reform.ccd.madeup.*'
+  ]
+  threads = 10
+  enableDefaultIncrementalAnalysis = true
+  outputFormats = ['XML', 'HTML']
+  timestampedReports = false
+  mutationThreshold = 50
+  timeoutConstInMillis = 30000
+  mutators.set([
+          'CONDITIONALS_BOUNDARY',
+          'INCREMENTS',
+          'INVERT_NEGS',
+          'MATH',
+          'NEGATE_CONDITIONALS',
+          'VOID_METHOD_CALLS',
+          'EMPTY_RETURNS',
+          'FALSE_RETURNS',
+          'NULL_RETURNS',
+          'PRIMITIVE_RETURNS',
+          'TRUE_RETURNS',
+          'REMOVE_CONDITIONALS'
+  ])
+}
+
+project.tasks['pitest'].group = "Verification"
 
 group = 'uk.gov.hmcts.reform'
 version = '0.0.1'
@@ -142,7 +176,7 @@ project.tasks['sonarqube'].dependsOn jacocoTestReport
 sonar {
   properties {
     property "sonar.projectName", "Reform :: disposer-idam-user"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:idam-user-disposer"
+    property "sonar.projectKey", "uk.gov.hmcts.reform:disposer-idam-user"
     property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     property "sonar.coverage.exclusions", "**/ccd/Application.java"
     property "sonar.pitest.mode", "reuseReport"
@@ -213,7 +247,8 @@ ext['snakeyaml.version'] = '2.0'
 def versions = [
   junit             : '5.9.3',
   cucumber          : '7.12.1',
-  lombok            : '1.18.28'
+  lombok            : '1.18.28',
+  gradlePitest        : '1.9.0'
 ]
 
 dependencies {
@@ -258,6 +293,7 @@ dependencies {
   testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.35.0'
   testImplementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
   testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
+  testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
 
   integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
   integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
