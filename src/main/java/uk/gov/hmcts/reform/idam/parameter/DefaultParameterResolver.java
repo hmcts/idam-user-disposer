@@ -5,11 +5,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DefaultParameterResolver implements ParameterResolver {
+
+    @Value("${idam.api.url}")
+    private String idamHost;
+
     @Value("${idam.api.username}")
     private String idamApiUsername;
 
     @Value("${idam.api.password}")
     private String idamApiPassword;
+
+    @Override
+    public String getIdamHost() {
+        return idamHost;
+    }
 
     @Override
     public String getIdamUsername() {

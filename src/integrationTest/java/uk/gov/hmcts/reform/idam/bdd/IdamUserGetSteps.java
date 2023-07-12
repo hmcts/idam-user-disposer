@@ -3,9 +3,9 @@ package uk.gov.hmcts.reform.idam.bdd;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 
-@SuppressWarnings({"PMD.JUnit4TestShouldUseBeforeAnnotation"})
 public class IdamUserGetSteps extends AbstractSteps {
 
+    @SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
     @Before
     public void setUp() {
         setupAuthorisationStub();

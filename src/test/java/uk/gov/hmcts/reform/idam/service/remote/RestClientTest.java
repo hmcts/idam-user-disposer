@@ -33,7 +33,7 @@ class RestClientTest {
     private RestConfig restConfig;
 
     @Test
-    void getRequest() {
+    void shouldExecuteGetRequest() {
         final Client client = mock(Client.class);
         final WebTarget webTarget = mock(WebTarget.class);
         final Invocation.Builder builder = mock(Invocation.Builder.class);
@@ -56,7 +56,7 @@ class RestClientTest {
         when(builder.header("ServiceAuthorization", "Bearer 1234")).thenReturn(builder);
         when(builder.get()).thenReturn(response);
 
-        final Response getResponse = restClient.getRequest(
+        restClient.getRequest(
             "http://localhost:9090",
             "/delete",
             Map.of("size", 100, "sort", "log-timestamp")

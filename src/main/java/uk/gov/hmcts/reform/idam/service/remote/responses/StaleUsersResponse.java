@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.idam.service.remote;
+package uk.gov.hmcts.reform.idam.service.remote.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class StaleUsersResponse {
     @JsonProperty("staleUsers")
-    private List<Long> staleUsersResponse;
+    private List<String> staleUsersResponse;
 
     @JsonProperty("moreRecords")
     private Boolean moreRecords;
