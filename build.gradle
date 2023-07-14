@@ -167,7 +167,7 @@ jacocoTestReport {
     xml.required = true
     csv.required = false
     html.required = true
-    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    xml.outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
 
@@ -225,6 +225,7 @@ dependencyManagement {
     dependencySet(group: 'org.springframework.cloud', version: '4.0.3') {
       entry 'spring-cloud-starter-openfeign'
       entry 'spring-cloud-openfeign-core'
+      entry 'spring-cloud-starter-contract-stub-runner'
     }
   }
   imports {
@@ -291,11 +292,16 @@ dependencies {
   testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
 
+  integrationTestImplementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-contract-stub-runner'
+
   integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
   integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 }
 
-mainClassName = 'uk.gov.hmcts.reform.idam.Application'
+application {
+  mainClass = 'uk.gov.hmcts.reform.idam.Application'
+}
+
 
 bootJar {
   archiveFileName = "disposer-idam-user.jar"

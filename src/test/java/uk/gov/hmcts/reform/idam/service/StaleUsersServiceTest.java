@@ -57,13 +57,14 @@ class StaleUsersServiceTest {
             new StaleUsersResponse(List.of("3", "4"), false)
         );
 
-        when(client.getRequest(nullable(String.class), anyString(), anyMap()))
+        when(client.getRequest(nullable(String.class), anyString(), anyMap(), anyMap()))
             .thenReturn(firstResponse)
             .thenReturn(secondResponse);
 
         List<String> staleUsers = service.retrieveStaleUsers();
         assertThat(staleUsers).hasSize(4);
-        verify(client, times(2)).getRequest(nullable(String.class), anyString(), anyMap());
+        verify(client, times(2)).getRequest(
+            nullable(String.class), anyString(), anyMap(), anyMap());
     }
 
     @Test
@@ -134,11 +135,6 @@ class StaleUsersServiceTest {
             .id("cc118861-1428-49e7-ad83-fc3343584353")
             .actorIdType("IDAM")
             .actorId(userId)
-            .roleType("role type")
-            .roleName("role name")
-            .classification("class")
-            .grantType("grant")
-            .roleCategory("role cat")
             .readOnly(false)
             .build();
     }

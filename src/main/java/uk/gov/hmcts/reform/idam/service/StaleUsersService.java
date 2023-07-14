@@ -27,10 +27,11 @@ public class StaleUsersService {
 
     private final ParameterResolver idamConfig;
 
-    private static final String STALE_USERS_PATH = "/api/v2/staleUsers";
+    public static final String STALE_USERS_PATH = "/api/v2/staleUsers";
+    public static final String ROLE_ASSIGNMENT_PATH = "/am/role-assignments/query";
     private static final String PAGE_NUMBER_PARAM = "pageNumber";
 
-    private static final String STALE_USERS_CONTENT_TYPE =
+    public static final String ROLE_ASSIGNMENTS_CONTENT_TYPE =
         "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;"
             + "charset=UTF-8;"
             + "version=2.0";
@@ -46,11 +47,11 @@ public class StaleUsersService {
     }
 
     public List<String> filterUsersWithRoleAssignments(List<String> staleUsers) {
-        Map<String, String> headers = Map.of("Content-Type", STALE_USERS_CONTENT_TYPE);
+        Map<String, String> headers = Map.of("Content-Type", ROLE_ASSIGNMENTS_CONTENT_TYPE);
         var roleAssignmentQuery = UserRoleAssignmentQueryRequest.builder().userIds(staleUsers).build();
         RequestBody body = UserRoleAssignmentQueryRequests.builder().queryRequests(roleAssignmentQuery).build();
 
-        final Response response = client.postRequest(idamConfig.getIdamHost(), STALE_USERS_PATH, headers, body);
+        final Response response = client.postRequest(idamConfig.getIdamHost(), ROLE_ASSIGNMENT_PATH, headers, body);
         if (response.getStatus() == OK.value()) {
             var assignmentsResponse = response.readEntity(RoleAssignmentResponse.class);
             var assignments = assignmentsResponse
@@ -71,7 +72,12 @@ public class StaleUsersService {
         boolean hasMore;
 
         do {
-            final Response response = client.getRequest(idamConfig.getIdamHost(), STALE_USERS_PATH, queryParams);
+            final Response response = client.getRequest(
+                idamConfig.getIdamHost(),
+                STALE_USERS_PATH,
+                Map.of("Content-Type", "application/json"),
+                queryParams
+            );
 
             if (response.getStatus() == OK.value()) {
                 var staleUsersResponse = response.readEntity(StaleUsersResponse.class);
