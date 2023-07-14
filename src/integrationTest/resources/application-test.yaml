@@ -30,3 +30,6 @@ authorised.roles: cft-audit-investigator,cft-service-logs
 
 
 targetInstance: ${TEST_URL:http://localhost:4550}
+
+service:
+  enabled: false
